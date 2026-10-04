@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { QrCode, LayoutDashboard, Users, Download, Sparkles, Activity, PieChart as PieIcon, LogOut, CheckCircle2, Smartphone, Monitor } from 'lucide-react';
+import { QrCode, LayoutDashboard, Users, Download, Sparkles, Activity, PieChart as PieIcon, LogOut, CheckCircle2, Smartphone, Monitor, Lock, User as UserIcon } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Scanner } from '@yudiel/react-qr-scanner';
 import './index.css';
@@ -13,13 +13,12 @@ const initialDataset = [
 ];
 
 function App() {
-  const [appMode, setAppMode] = useState(null); // null = landing, 'user' = mobile, 'admin' = dashboard
+  const [appMode, setAppMode] = useState(null); // null = landing, 'user' = mobile, 'login' = login admin, 'admin' = dashboard
   const [attendees, setAttendees] = useState(initialDataset);
   const [feed, setFeed] = useState([
     { id: 1, user: "Carlos M.", action: "Ingreso Exitoso", time: "10:15 AM" }
   ]);
 
-  // Global Checkin Logic (State is shared perfectly because it's an SPA)
   const processCheckIn = (name, product, method = "QR") => {
     const now = new Date();
     const timeStr = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
@@ -45,7 +44,7 @@ function App() {
     ]);
   };
 
-  // LANDING PAGE (ROLE SELECTOR)
+  // 1. LANDING PAGE
   if (!appMode) {
     return (
       <div className="role-selector fade-in">
@@ -61,7 +60,7 @@ function App() {
           <p style={{color: 'var(--cc-text-muted)', lineHeight: '1.5'}}>Experiencia móvil inmersiva. Genera un ticket QR en segundos.</p>
         </div>
 
-        <div className="role-card" onClick={() => setAppMode('admin')}>
+        <div className="role-card" onClick={() => setAppMode('login')}>
           <Monitor size={50} color="black" style={{marginBottom: '24px', background: 'var(--cc-accent)', padding: '12px', borderRadius: '16px'}} />
           <h2 style={{color: 'white', fontSize: '1.8rem', marginBottom: '12px'}}>Vista Admin</h2>
           <p style={{color: 'var(--cc-text-muted)', lineHeight: '1.5'}}>Dashboard analítico con IA, cámara de control y exportación BI.</p>
@@ -70,15 +69,78 @@ function App() {
     );
   }
 
-  // APP ROUTING
+  // 2. USER APP
   if (appMode === 'user') {
     return <UserApp goBack={() => setAppMode(null)} />;
   }
 
+  // 3. ADMIN LOGIN
+  if (appMode === 'login') {
+    return <AdminLogin onLogin={() => setAppMode('admin')} goBack={() => setAppMode(null)} />;
+  }
+
+  // 4. ADMIN DASHBOARD
   if (appMode === 'admin') {
     return <AdminApp attendees={attendees} feed={feed} processCheckIn={processCheckIn} goBack={() => setAppMode(null)} />;
   }
 }
+
+// ==========================================
+// ADMIN LOGIN COMPONENT
+// ==========================================
+const AdminLogin = ({ onLogin, goBack }) => {
+  const [error, setError] = useState('');
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    const user = e.target.user.value;
+    const pass = e.target.password.value;
+    // Simple mock authentication
+    if (user === 'admin' && pass === '1234') {
+      onLogin();
+    } else {
+      setError('Credenciales incorrectas. (Pista: admin / 1234)');
+    }
+  };
+
+  return (
+    <div className="user-app fade-in" style={{justifyContent: 'center'}}>
+      <button onClick={goBack} style={{position: 'absolute', top: '30px', left: '30px', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', padding: '10px 20px', borderRadius: '30px', cursor: 'pointer', backdropFilter: 'blur(10px)', zIndex: 100, fontWeight: 600}}>
+        ← Volver
+      </button>
+
+      <div className="user-card fade-in" style={{textAlign: 'center', padding: '50px 40px'}}>
+        <Lock size={50} color="var(--cc-accent)" style={{marginBottom: '20px', margin: '0 auto'}} />
+        <h2 style={{color: 'white', fontSize: '2rem', marginBottom: '10px'}}>Acceso Restringido</h2>
+        <p style={{color: 'var(--cc-text-muted)', marginBottom: '30px'}}>Portal de Administración Coca-Cola</p>
+
+        <form onSubmit={handleLogin} style={{display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left'}}>
+          <div>
+            <label style={{color: 'var(--cc-text-muted)', fontSize: '0.9rem', marginLeft: '10px'}}>Usuario</label>
+            <div style={{position: 'relative'}}>
+              <UserIcon size={20} color="#888" style={{position: 'absolute', top: '18px', left: '16px'}} />
+              <input type="text" name="user" required className="form-input" style={{paddingLeft: '45px'}} placeholder="Ingresa 'admin'" />
+            </div>
+          </div>
+          
+          <div>
+            <label style={{color: 'var(--cc-text-muted)', fontSize: '0.9rem', marginLeft: '10px'}}>Contraseña</label>
+            <div style={{position: 'relative'}}>
+              <Lock size={20} color="#888" style={{position: 'absolute', top: '18px', left: '16px'}} />
+              <input type="password" name="password" required className="form-input" style={{paddingLeft: '45px'}} placeholder="Ingresa '1234'" />
+            </div>
+          </div>
+
+          {error && <p style={{color: 'var(--cc-red)', fontSize: '0.9rem', textAlign: 'center', fontWeight: 'bold'}}>{error}</p>}
+
+          <button type="submit" className="action-btn" style={{marginTop: '10px', background: 'var(--cc-accent)', color: 'black', boxShadow: '0 8px 30px rgba(242, 200, 17, 0.3)'}}>
+            Ingresar al Sistema
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
 
 // ==========================================
 // USER APP (Mobile Experience)
@@ -145,7 +207,6 @@ const AdminApp = ({ attendees, feed, processCheckIn, goBack }) => {
   const [scanResult, setScanResult] = useState(null);
   const [isScanning, setIsScanning] = useState(true);
 
-  // Unmount camera when leaving scanner view
   useEffect(() => {
     if (currentView !== 'scanner') setIsScanning(false);
     else setIsScanning(true);
@@ -163,6 +224,10 @@ const AdminApp = ({ attendees, feed, processCheckIn, goBack }) => {
 
     return { registered: 350, present: present.length, totalInteractions, totalConversions, avgNps, productData };
   }, [attendees]);
+
+  // CRITICAL FIX: To prevent mutating the array Recharts is using to render (which causes the blank screen crash),
+  // we copy the array using [...stats.productData] before sorting it.
+  const topProduct = [...stats.productData].sort((a,b) => b.value - a.value)[0]?.name || 'Coca-Cola Zero';
 
   const handleScan = (result) => {
     if (result && result.length > 0 && isScanning) {
@@ -272,8 +337,8 @@ const AdminApp = ({ attendees, feed, processCheckIn, goBack }) => {
                 <h3 style={{color: 'white', fontSize: '1.4rem', fontWeight: 700}}>Cortex AI Insights</h3>
               </div>
               <p style={{fontSize: '1.15rem', lineHeight: '1.6', color: 'var(--cc-text-muted)'}}>
-                <strong style={{color: 'white'}}>Patrón Detectado:</strong> El flujo hacia el producto <strong style={{color: 'var(--cc-red)'}}>{stats.productData.sort((a,b)=>b.value-a.value)[0]?.name || 'Coca-Cola Zero'}</strong> ha incrementado un 42% en la última hora.
-                <br/><br/><span style={{color: 'var(--cc-success)', fontWeight: 600, background: 'rgba(74, 222, 128, 0.1)', padding: '8px 16px', borderRadius: '8px'}}>💡 Acción: Notificación push promocional sugerida al segmento 18-25 años para maximizar conversiones cruzadas.</span>
+                <strong style={{color: 'white'}}>Patrón Detectado:</strong> El flujo hacia el producto <strong style={{color: 'var(--cc-red)'}}>{topProduct}</strong> ha incrementado un 42% en la última hora.
+                <br/><br/><span style={{color: 'var(--cc-success)', fontWeight: 600, background: 'rgba(74, 222, 128, 0.1)', padding: '8px 16px', borderRadius: '8px'}}>💡 Acción Automática: Notificación push promocional lanzada al segmento de 18-25 años para maximizar conversiones cruzadas.</span>
               </p>
             </div>
 
