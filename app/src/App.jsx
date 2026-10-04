@@ -289,14 +289,20 @@ const UserApp = ({ events, onRegister, goBack }) => {
 };
 
 // ==========================================
-// ADMIN APP
+// ADMIN APP (SPLIT COMPONENTS TO FIX REACT HOOKS)
 // ==========================================
 const AdminApp = ({ events, createEvent, processCheckIn, goBack }) => {
   const [activeEventId, setActiveEventId] = useState(null);
-  const [currentView, setCurrentView] = useState('dashboard');
-  const [isScanning, setIsScanning] = useState(true);
-  const [scanResult, setScanResult] = useState(null);
 
+  if (!activeEventId) {
+    return <AdminEventList events={events} createEvent={createEvent} onSelect={setActiveEventId} goBack={goBack} />;
+  }
+
+  const currentEvent = events.find(e => e.id === activeEventId);
+  return <AdminDashboard currentEvent={currentEvent} processCheckIn={processCheckIn} goBack={() => setActiveEventId(null)} />;
+};
+
+const AdminEventList = ({ events, createEvent, onSelect, goBack }) => {
   const handleCreate = (e) => {
     e.preventDefault();
     createEvent(
@@ -310,82 +316,83 @@ const AdminApp = ({ events, createEvent, processCheckIn, goBack }) => {
     alert("¡Evento premium creado exitosamente!");
   };
 
-  if (!activeEventId) {
-    return (
-      <div className="layout fade-in" style={{background: 'var(--cc-dark)', overflowY: 'auto'}}>
-        <div style={{padding: '40px', width: '100%', maxWidth: '1400px', margin: '0 auto'}}>
-          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px', flexWrap: 'wrap', gap: '20px'}}>
-            <div>
-              <h1 style={{color: 'white', fontSize: '3rem', fontWeight: 800}}>Gestor de Eventos</h1>
-              <p style={{color: 'var(--cc-text-muted)', fontSize: '1.2rem'}}>Administración Multi-Sede</p>
-            </div>
-            <button onClick={goBack} className="action-btn" style={{width: 'auto', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white'}}><LogOut size={18} style={{display:'inline', marginRight:'8px'}}/> Cerrar Sesión</button>
+  return (
+    <div className="layout fade-in" style={{background: 'var(--cc-dark)', overflowY: 'auto'}}>
+      <div style={{padding: '40px', width: '100%', maxWidth: '1400px', margin: '0 auto'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px', flexWrap: 'wrap', gap: '20px'}}>
+          <div>
+            <h1 style={{color: 'white', fontSize: '3rem', fontWeight: 800}}>Gestor de Eventos</h1>
+            <p style={{color: 'var(--cc-text-muted)', fontSize: '1.2rem'}}>Administración Multi-Sede</p>
+          </div>
+          <button onClick={goBack} className="action-btn" style={{width: 'auto', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white'}}><LogOut size={18} style={{display:'inline', marginRight:'8px'}}/> Cerrar Sesión</button>
+        </div>
+
+        <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '30px'}}>
+          <div className="glass-panel" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', border: '2px dashed rgba(255,255,255,0.2)', background: 'transparent', minHeight: '400px'}}>
+            <h3 style={{color: 'white', marginBottom: '24px', fontSize: '1.5rem'}}>Crear Nuevo Evento</h3>
+            <form onSubmit={handleCreate} style={{display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', maxWidth: '350px'}}>
+              <input type="text" name="name" placeholder="Nombre del Evento" required className="form-input" style={{padding: '16px'}} />
+              <div style={{display: 'flex', gap: '10px'}}>
+                <input type="text" name="date" placeholder="Fecha" required className="form-input" style={{padding: '16px', flex: 1}} />
+                <input type="text" name="location" placeholder="Sede" required className="form-input" style={{padding: '16px', flex: 1}} />
+              </div>
+              <textarea name="description" placeholder="Descripción atractiva del evento..." required className="form-input" style={{padding: '16px', resize: 'none', height: '80px', fontFamily: 'inherit'}} />
+              <div style={{position: 'relative'}}>
+                <ImageIcon size={20} color="#888" style={{position: 'absolute', top: '16px', left: '16px'}} />
+                <input type="url" name="image" placeholder="URL de Imagen (Opcional)" className="form-input" style={{padding: '16px 16px 16px 45px'}} />
+              </div>
+              <button type="submit" className="action-btn" style={{padding: '16px', marginTop: '10px'}}><Plus size={18} style={{display:'inline'}}/> Publicar Evento</button>
+            </form>
           </div>
 
-          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '30px'}}>
-            {/* Create Event Card */}
-            <div className="glass-panel" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', border: '2px dashed rgba(255,255,255,0.2)', background: 'transparent', minHeight: '400px'}}>
-              <h3 style={{color: 'white', marginBottom: '24px', fontSize: '1.5rem'}}>Crear Nuevo Evento</h3>
-              <form onSubmit={handleCreate} style={{display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', maxWidth: '350px'}}>
-                <input type="text" name="name" placeholder="Nombre del Evento" required className="form-input" style={{padding: '16px'}} />
-                <div style={{display: 'flex', gap: '10px'}}>
-                  <input type="text" name="date" placeholder="Fecha" required className="form-input" style={{padding: '16px', flex: 1}} />
-                  <input type="text" name="location" placeholder="Sede" required className="form-input" style={{padding: '16px', flex: 1}} />
-                </div>
-                <textarea name="description" placeholder="Descripción atractiva del evento..." required className="form-input" style={{padding: '16px', resize: 'none', height: '80px', fontFamily: 'inherit'}} />
-                <div style={{position: 'relative'}}>
-                  <ImageIcon size={20} color="#888" style={{position: 'absolute', top: '16px', left: '16px'}} />
-                  <input type="url" name="image" placeholder="URL de Imagen (Opcional)" className="form-input" style={{padding: '16px 16px 16px 45px'}} />
-                </div>
-                <button type="submit" className="action-btn" style={{padding: '16px', marginTop: '10px'}}><Plus size={18} style={{display:'inline'}}/> Publicar Evento</button>
-              </form>
-            </div>
-
-            {/* List Events */}
-            {events.map(ev => (
-              <div 
-                key={ev.id} 
-                style={{
-                  background: `linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 100%), url(${ev.image}) center/cover`,
-                  borderRadius: '24px',
-                  padding: '30px',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  minHeight: '400px',
-                  boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
-                  border: `1px solid ${ev.theme}`
-                }}
-              >
-                <div style={{position: 'relative', zIndex: 2}}>
-                  {ev.status === 'live' && <div style={{position: 'absolute', top: '0', right: '0', width: '12px', height: '12px', background: '#4ade80', borderRadius: '50%', boxShadow: '0 0 15px #4ade80', animation: 'pulse 2s infinite'}}></div>}
-                  <h2 style={{color: 'white', fontSize: '2.2rem', fontWeight: 800, textShadow: '0 4px 15px rgba(0,0,0,0.8)', marginBottom: '12px', lineHeight: 1.1, paddingRight: '20px'}}>{ev.name}</h2>
-                  <p style={{color: 'rgba(255,255,255,0.8)', fontSize: '0.95rem', marginBottom: '16px', lineHeight: '1.5'}}><Info size={16} style={{display:'inline', verticalAlign:'text-bottom', marginRight:'6px', color: ev.theme}}/> {ev.description}</p>
-                  <div style={{display: 'flex', gap: '16px'}}>
-                    <p style={{color: 'rgba(255,255,255,0.9)', fontSize: '1rem', fontWeight: 500}}><Calendar size={18} style={{display:'inline', verticalAlign:'text-bottom', marginRight:'6px', color: ev.theme}}/> {ev.date}</p>
-                    <p style={{color: 'rgba(255,255,255,0.9)', fontSize: '1rem'}}><MapPin size={18} style={{display:'inline', verticalAlign:'text-bottom', marginRight:'6px', color: ev.theme}}/> {ev.location}</p>
-                  </div>
-                </div>
-                
-                <div style={{position: 'relative', zIndex: 2, marginTop: '20px'}}>
-                  <div style={{background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', padding: '16px 20px', borderRadius: '16px', marginBottom: '20px', display: 'inline-block'}}>
-                    <p style={{color: 'white', fontWeight: 700, fontSize: '1.2rem'}}><Users size={18} style={{display:'inline', marginRight:'8px'}}/> {ev.attendees.length} Registros Activos</p>
-                  </div>
-                  <button onClick={() => setActiveEventId(ev.id)} className="action-btn" style={{width: '100%', background: ev.theme, color: 'white', boxShadow: '0 10px 30px rgba(0,0,0,0.4)'}}>
-                    Entrar al Dashboard Central <ArrowRight size={18} style={{display:'inline', verticalAlign:'middle', marginLeft:'6px'}}/>
-                  </button>
+          {events.map(ev => (
+            <div 
+              key={ev.id} 
+              style={{
+                background: `linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 100%), url(${ev.image}) center/cover`,
+                borderRadius: '24px',
+                padding: '30px',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                minHeight: '400px',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+                border: `1px solid ${ev.theme}`
+              }}
+            >
+              <div style={{position: 'relative', zIndex: 2}}>
+                {ev.status === 'live' && <div style={{position: 'absolute', top: '0', right: '0', width: '12px', height: '12px', background: '#4ade80', borderRadius: '50%', boxShadow: '0 0 15px #4ade80', animation: 'pulse 2s infinite'}}></div>}
+                <h2 style={{color: 'white', fontSize: '2.2rem', fontWeight: 800, textShadow: '0 4px 15px rgba(0,0,0,0.8)', marginBottom: '12px', lineHeight: 1.1, paddingRight: '20px'}}>{ev.name}</h2>
+                <p style={{color: 'rgba(255,255,255,0.8)', fontSize: '0.95rem', marginBottom: '16px', lineHeight: '1.5'}}><Info size={16} style={{display:'inline', verticalAlign:'text-bottom', marginRight:'6px', color: ev.theme}}/> {ev.description}</p>
+                <div style={{display: 'flex', gap: '16px'}}>
+                  <p style={{color: 'rgba(255,255,255,0.9)', fontSize: '1rem', fontWeight: 500}}><Calendar size={18} style={{display:'inline', verticalAlign:'text-bottom', marginRight:'6px', color: ev.theme}}/> {ev.date}</p>
+                  <p style={{color: 'rgba(255,255,255,0.9)', fontSize: '1rem'}}><MapPin size={18} style={{display:'inline', verticalAlign:'text-bottom', marginRight:'6px', color: ev.theme}}/> {ev.location}</p>
                 </div>
               </div>
-            ))}
-          </div>
+              
+              <div style={{position: 'relative', zIndex: 2, marginTop: '20px'}}>
+                <div style={{background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', padding: '16px 20px', borderRadius: '16px', marginBottom: '20px', display: 'inline-block'}}>
+                  <p style={{color: 'white', fontWeight: 700, fontSize: '1.2rem'}}><Users size={18} style={{display:'inline', marginRight:'8px'}}/> {ev.attendees.length} Registros Activos</p>
+                </div>
+                <button onClick={() => onSelect(ev.id)} className="action-btn" style={{width: '100%', background: ev.theme, color: 'white', boxShadow: '0 10px 30px rgba(0,0,0,0.4)'}}>
+                  Entrar al Dashboard Central <ArrowRight size={18} style={{display:'inline', verticalAlign:'middle', marginLeft:'6px'}}/>
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+};
 
-  const currentEvent = events.find(e => e.id === activeEventId);
+const AdminDashboard = ({ currentEvent, processCheckIn, goBack }) => {
+  const [currentView, setCurrentView] = useState('dashboard');
+  const [isScanning, setIsScanning] = useState(true);
+  const [scanResult, setScanResult] = useState(null);
+
   const attendees = currentEvent.attendees;
   const feed = currentEvent.feed;
 
@@ -443,7 +450,7 @@ const AdminApp = ({ events, createEvent, processCheckIn, goBack }) => {
           <div className={`nav-item ${currentView === 'scanner' ? 'active' : ''}`} onClick={() => setCurrentView('scanner')}><QrCode size={20} /> Puerta / Escáner</div>
           <div className={`nav-item ${currentView === 'attendees' ? 'active' : ''}`} onClick={() => setCurrentView('attendees')}><Users size={20} /> CRM Base de Datos</div>
           
-          <div className="nav-item" onClick={() => setActiveEventId(null)} style={{marginTop: 'auto', background: 'rgba(255,255,255,0.05)', color: 'white'}}>
+          <div className="nav-item" onClick={goBack} style={{marginTop: 'auto', background: 'rgba(255,255,255,0.05)', color: 'white'}}>
             <ArrowLeft size={20} /> Volver a Eventos
           </div>
         </nav>
