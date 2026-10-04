@@ -1,0 +1,51 @@
+ID,Nombre,Edad,Ciudad,Asistencia,Interacciones,NPS,Producto_Favorito,Conversion,Canal_Registro
+1,Carlos M.,24,Santa Cruz,Si,3,5,Coca-Cola Zero,Si,App
+2,Ana L.,30,La Paz,Si,1,4,Coca-Cola Original,No,Web
+3,Luis P.,19,Cochabamba,Si,4,5,Sprite,Si,Redes Sociales
+4,María G.,22,Santa Cruz,Si,2,4,Coca-Cola Zero,Si,App
+5,Jorge D.,28,La Paz,No,0,0,Fanta,No,Web
+6,Lucia R.,25,Cochabamba,Si,5,5,Coca-Cola Zero,Si,QR Invitación
+7,Pedro S.,35,Santa Cruz,Si,2,3,Coca-Cola Original,No,Web
+8,Carla T.,21,Santa Cruz,Si,4,5,Sprite,Si,App
+9,Diego F.,27,La Paz,Si,3,4,Coca-Cola Zero,Si,Redes Sociales
+10,Elena M.,23,Cochabamba,No,0,0,Coca-Cola Original,No,Web
+11,Andres V.,31,Santa Cruz,Si,2,4,Fanta,No,App
+12,Sofía C.,20,Santa Cruz,Si,5,5,Coca-Cola Zero,Si,QR Invitación
+13,Mateo J.,26,La Paz,Si,1,3,Coca-Cola Original,No,Redes Sociales
+14,Camila P.,29,Cochabamba,Si,3,5,Sprite,Si,App
+15,Martin L.,24,Santa Cruz,Si,4,4,Coca-Cola Zero,Si,Web
+16,Valeria B.,22,Santa Cruz,Si,2,5,Fanta,Si,QR Invitación
+17,Hugo N.,33,La Paz,Si,3,4,Coca-Cola Original,No,Redes Sociales
+18,Paula H.,21,Cochabamba,Si,5,5,Coca-Cola Zero,Si,App
+19,Nicolas G.,25,Santa Cruz,Si,1,3,Sprite,No,Web
+20,Daniela R.,28,La Paz,Si,4,5,Coca-Cola Zero,Si,QR Invitación
+21,Jose M.,23,Santa Cruz,Si,2,4,Coca-Cola Original,No,App
+22,Laura F.,27,Cochabamba,Si,3,5,Fanta,Si,Redes Sociales
+23,Tomas V.,30,Santa Cruz,No,0,0,Coca-Cola Zero,No,Web
+24,Isabella C.,19,La Paz,Si,5,5,Coca-Cola Original,Si,App
+25,Lucas P.,26,Cochabamba,Si,2,4,Sprite,No,QR Invitación
+26,Mariana J.,24,Santa Cruz,Si,4,5,Coca-Cola Zero,Si,Redes Sociales
+27,Kevin S.,22,Santa Cruz,Si,3,4,Fanta,No,Web
+28,Andrea N.,29,La Paz,Si,1,3,Coca-Cola Original,No,App
+29,Gabriel L.,31,Cochabamba,Si,5,5,Coca-Cola Zero,Si,QR Invitación
+30,Valentina B.,20,Santa Cruz,Si,2,4,Sprite,Si,Redes Sociales
+31,Ricardo H.,25,La Paz,Si,4,5,Coca-Cola Zero,Si,App
+32,Natalia G.,28,Cochabamba,Si,3,4,Coca-Cola Original,No,Web
+33,Sebastian R.,23,Santa Cruz,Si,5,5,Fanta,Si,QR Invitación
+34,Juliana F.,27,Santa Cruz,Si,1,3,Coca-Cola Zero,No,Redes Sociales
+35,Fernando V.,21,La Paz,Si,4,5,Sprite,Si,App
+36,Carolina C.,26,Cochabamba,Si,2,4,Coca-Cola Original,No,Web
+37,Alejandro P.,30,Santa Cruz,Si,3,5,Coca-Cola Zero,Si,QR Invitación
+38,Monica J.,24,La Paz,Si,5,5,Fanta,Si,Redes Sociales
+39,Emilio S.,22,Cochabamba,Si,1,3,Coca-Cola Original,No,App
+40,Renata N.,29,Santa Cruz,Si,4,4,Coca-Cola Zero,Si,Web
+41,Esteban L.,25,Santa Cruz,Si,3,5,Sprite,Si,QR Invitación
+42,Lorena B.,28,La Paz,Si,2,4,Coca-Cola Zero,No,Redes Sociales
+43,Joaquin H.,20,Cochabamba,Si,5,5,Fanta,Si,App
+44,Silvia G.,27,Santa Cruz,Si,1,3,Coca-Cola Original,No,Web
+45,Roberto R.,23,La Paz,Si,4,5,Coca-Cola Zero,Si,QR Invitación
+46,Paola F.,26,Cochabamba,Si,3,4,Sprite,Si,Redes Sociales
+47,Javier V.,31,Santa Cruz,Si,2,5,Coca-Cola Original,No,App
+48,Cecilia C.,22,Santa Cruz,Si,5,5,Coca-Cola Zero,Si,QR Invitación
+49,Gustavo P.,29,La Paz,Si,4,4,Fanta,Si,Web
+50,Ximena J.,24,Cochabamba,Si,3,5,Coca-Cola Zero,Si,App
