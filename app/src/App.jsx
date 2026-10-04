@@ -53,6 +53,15 @@ const initialEvents = [
 function App() {
   const [appMode, setAppMode] = useState(null);
   const [events, setEvents] = useState(initialEvents);
+  const [isBooting, setIsBooting] = useState(true);
+  const [loadingText, setLoadingText] = useState('INICIALIZANDO CORTEX AI...');
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setLoadingText('Sincronizando Sedes Globales...'), 1500);
+    const t2 = setTimeout(() => setLoadingText('Cargando la energía del festival...'), 2800);
+    const t3 = setTimeout(() => setIsBooting(false), 4500);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); }
+  }, []);
 
   const processCheckIn = (eventId, name, product, method = "QR") => {
     const now = new Date();
@@ -91,6 +100,41 @@ function App() {
     };
     setEvents([newEvent, ...events]);
   };
+
+  if (isBooting) {
+    return (
+      <div style={{
+        position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
+        background: 'radial-gradient(circle at center, #8A0005 0%, #000000 80%)',
+        display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+        zIndex: 9999, overflow: 'hidden'
+      }}>
+        <div style={{position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'url(https://grainy-gradients.vercel.app/noise.svg)', opacity: 0.2, mixBlendMode: 'overlay'}}></div>
+        
+        <div style={{animation: 'pulse 2s infinite', textAlign: 'center', zIndex: 2}}>
+          <h1 style={{color: 'white', fontSize: '4.5rem', fontWeight: 900, textShadow: '0 0 50px rgba(244, 0, 9, 0.8)', marginBottom: '10px', lineHeight: 1}}>
+            COCA-COLA
+          </h1>
+          <h2 style={{color: 'var(--cc-red)', fontSize: '2.5rem', fontWeight: 800, textShadow: '0 0 20px var(--cc-red)', letterSpacing: '4px', marginBottom: '50px'}}>
+            INTELLIGENCE
+          </h2>
+        </div>
+
+        <div style={{width: '320px', height: '6px', background: 'rgba(255,255,255,0.1)', borderRadius: '10px', overflow: 'hidden', marginBottom: '24px', position: 'relative', zIndex: 2}}>
+          <div style={{
+            position: 'absolute', top: 0, left: 0, height: '100%', width: '100%',
+            background: 'linear-gradient(90deg, #F40009 0%, #ff4d4d 100%)',
+            boxShadow: '0 0 20px #F40009',
+            animation: 'loadingBar 4.4s cubic-bezier(0.4, 0, 0.2, 1) forwards'
+          }}></div>
+        </div>
+
+        <p style={{color: 'white', fontSize: '1.2rem', fontWeight: 600, letterSpacing: '3px', animation: 'pulse 1.5s infinite', zIndex: 2, textTransform: 'uppercase'}}>
+          {loadingText}
+        </p>
+      </div>
+    );
+  }
 
   if (!appMode) {
     return (
